@@ -6,6 +6,8 @@ public class Exam1753 {
 	static boolean[] visit;		//방문 여부
 	static int[][] weight;		//각 정점 간의 가중치
 	
+	//해당 정점과 이어진 간선 중 최소의 간선을 고른다. 우선순위큐 이용하기
+	
 	
 	
 	public static void main(String[] args) {
@@ -29,6 +31,9 @@ public class Exam1753 {
 		}
 		
 		/////////////////////////////입력 부분
+		
+		
+		////////////////////////////
 		for(int u=0;u<V;u++) {
 			for(int v=0;v<V;v++) {
 				if(u==v) {
@@ -38,7 +43,9 @@ public class Exam1753 {
 				}
 			}
 		}
-
+		////////////////////////////
+		/*간선이 없는 부분 = 무한대, 자신과의 길이는 =0 */
+		
 	}
 	
 	

@@ -1,7 +1,7 @@
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.Vector;
- 
+  
  
 //최소값 , 시작-종료
 public class Exam1931 {

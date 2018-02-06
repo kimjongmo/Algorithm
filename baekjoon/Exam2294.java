@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Exam2294 {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
-     
+      
     int n = sc.nextInt();
     int k= sc.nextInt();
     int[] coin = new int[n];//각 동전의 값

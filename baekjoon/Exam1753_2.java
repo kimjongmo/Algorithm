@@ -9,27 +9,54 @@ public class Exam1753_2 {
 	static int totalV = 0;// 전체 정점의 갯수
 	static int totalE = 0;// 전체 간선의 갯수
 	static int start = 0;// 시작 정점
-	static PriorityQueue<Line> queue = new PriorityQueue<>();
+	static PriorityQueue<Line> queue = null;
 
-	//get queue 만들고 최초 한번만 삽입 하자  19~21라인을 이쪽으로 옮기기
-	static int getM() {
-
+	//큐 초기화
+	static PriorityQueue<Line> getQueue() {
+		queue = new PriorityQueue<>();
+		
 		Line[] lines = map.get(start);
-
-		for (int i = 0; i < lines.length; i++) {
-			queue.add(lines[i]);
-		}
-		Line top = queue.poll();
-		while (true) {
-			if (top.w == 0 || top.w == 200001) {
-				top = queue.poll();
-			}else {
-				break;
+		
+		for(int i=1;i<=totalV;i++) {
+			if(lines[i]==null) {//값이 null => 현재 거리가 무한대인 정점을 의미.
+				continue;
+			}else if(i==start){//자기 자신은 볼 필요가 없음.
+				continue;
+			}else {				//값을 아는 것만 큐에 넣는다.
+				queue.add(lines[i]);
 			}
 		}
-		return top.v;
+		return queue;
 	}
 
+	static void updateDistance() {	//다익스트라..
+		
+		queue = getQueue();//우선순위 큐 초기화
+		
+		while(queue.peek()!=null) {//큐에 더이상 값이 없을 때 까지 반복한다.
+			
+			Line line = queue.poll();	//큐에서 하나를 반환(=거리가 가장 최소).
+			
+			Line[] lines1 = map.get(line.v);	//해당 정점의 라인들을 불러온다.
+			Line[] lines2 = map.get(start);		
+			for(int i=1;i<totalV;i++) {
+				if(lines1[i]==null) {
+					continue;
+				}else if(i==line.v) {
+					continue;
+				}else {
+					if(lines2[i]!=null) {
+						lines2[i].w = Math.min(lines2[i].w,lines2[line.v].w + lines1[i].w);
+						//매번 큐를 업데이트 하자니.. 계속 같은 최소 정점만 나올테고.
+						//큐를 한번만 초기화 시키고 계속 쓰자니. 큐를 업데이트하는 것이 복잡하고
+						//진퇴양난이로다....
+					}
+				}
+			}
+		}
+		
+		
+	}
 	public static void main(String[] args) {
 
 		try {
@@ -37,18 +64,11 @@ public class Exam1753_2 {
 
 			totalE = sc.nextInt();
 			start = sc.nextInt();
-
+			
 			for (int i = 1; i <= totalV; i++) {
-				Line[] lines = new Line[totalV];
-				for (int j = 1; j <= totalV; j++) {
-					if (i == j) {
-						lines[j - 1] = new Line(j, 0);
-					} else {
-						lines[j - 1] = new Line(j);
-					}
-				}
+				Line[] lines = new Line[totalV+1];
+				lines[i]=new Line(i,0);
 				map.put(i, lines);
-
 			}
 
 			for (int i = 1; i <= totalE; i++) {
@@ -57,7 +77,7 @@ public class Exam1753_2 {
 				int w = sc.nextInt();
 
 				Line[] lines = map.get(u);
-				lines[v - 1].w = w;
+				lines[v] = new Line(v,w);
 			}
 
 			sc.close();
@@ -67,8 +87,7 @@ public class Exam1753_2 {
 
 		show();
 
-		System.out.println("첫번째 최소 정점 = " + getM());
-		System.out.println("두번째 최소 정점 = " + getM());
+
 
 	}
 
@@ -76,8 +95,8 @@ public class Exam1753_2 {
 		for (int i = 1; i <= totalV; i++) {
 			Line[] lines = map.get(i);
 			System.out.print(i + "\t");
-			for (int j = 0; j < lines.length; j++) {
-				if (lines[j].w == 200001) {
+			for (int j = 1; j <= totalV; j++) {
+				if (lines[j]==null) {
 					System.out.print("INF\t");
 				} else {
 					System.out.print(lines[j].w + "\t");

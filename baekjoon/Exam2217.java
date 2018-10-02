@@ -10,7 +10,7 @@ public class Exam2217 {
 		try(BufferedReader br = new BufferedReader(new InputStreamReader(System.in))){
 			int N = Integer.parseInt(br.readLine());
 			Integer[] lope = new Integer[N];
-			
+		
 			for(int i=0;i<N;i++) {
 				lope[i]= Integer.parseInt(br.readLine());
 			}

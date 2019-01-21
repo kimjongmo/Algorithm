@@ -59,6 +59,8 @@ public class Exam1260 {
 		visit = new int[N+1];
 		System.out.println();
 		bfs(start);
+		
+		sc.close();
 	}
 }
 //4 5 1 1 2 1 3 1 4 2 4 3 4

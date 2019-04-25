@@ -1,54 +1,103 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Exam1753 {
-	static final int INFINITY = 1000000;	
-	static int[][] distance;	//최소 거리
-	static boolean[] visit;		//방문 여부
-	static int[][] weight;		//각 정점 간의 가중치
-	
-	//해당 정점과 이어진 간선 중 최소의 간선을 고른다. 우선순위큐 이용하기
-	
-	
-	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		
-		///////////////////////////////입력 부분
-		
-		int V = sc.nextInt();	//정점의 갯수
-		int E = sc.nextInt();	//간선의 갯수
-		int startV = sc.nextInt();	//시작점
-		
-		distance = new int[V][V];//최소거리
-		visit = new boolean[V];//방문 여부
-		weight = new int[V][V];//간선 값
-		
-		for(int i=0;i<E;i++) {
-			int u = sc.nextInt();
-			int v = sc.nextInt();
-			int w = sc.nextInt();
-			weight[u-1][v-1]=w;//****weigh[1][2] 정점 2에서 3까지의 간선
+	static int V;
+	static int E;
+	static int start;
+	static final int INFINITY = 2000000;
+	static boolean[] visit; // 방문 여부
+	static int[] answer; // answer
+	static PriorityQueue<Element> queue = new PriorityQueue<>();
+	static List<Element>[] list;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+		StringTokenizer token = null;
+		String[] temp = br.readLine().split(" ");
+		V = Integer.parseInt(temp[0]);
+		E = Integer.parseInt(temp[1]);
+		start = Integer.parseInt(br.readLine());
+		visit = new boolean[V + 1];
+		answer = new int[V + 1];
+		list = new ArrayList[V + 1];
+
+		for (int i = 1; i < V + 1; i++) {
+			list[i] = new ArrayList<Element>();
+			visit[i] = false;
+			if (i == start)
+				answer[i] = 0;
+			else
+				answer[i] = INFINITY;
 		}
-		
-		/////////////////////////////입력 부분
-		
-		
-		////////////////////////////
-		for(int u=0;u<V;u++) {
-			for(int v=0;v<V;v++) {
-				if(u==v) {
-					weight[u][v] = 0;
-				}else if(weight[u][v]==0) {
-					weight[u][v]= INFINITY;	
-				}
+
+		for (int i = 0; i < E; i++) {
+			token = new StringTokenizer(br.readLine(), " ");
+			while (token.hasMoreTokens()) {
+
+				int u = Integer.parseInt(token.nextToken());
+				int v = Integer.parseInt(token.nextToken());
+				int w = Integer.parseInt(token.nextToken());
+
+				list[u].add(new Element(v, w));
 			}
 		}
-		////////////////////////////
-		/*간선이 없는 부분 = 무한대, 자신과의 길이는 =0 */
-		
-	}
-	
-	
-}
 
-//5 6 1 5 1 1 1 2 2 1 3 3 2 3 4 2 4 5 3 4 6
+		visit[start] = true;
+		list[start].stream().forEach(e -> {
+			answer[e.idx] = Math.min(answer[e.idx], e.distance);
+			queue.add(e);
+		});
+
+		dijkstra();
+		for (int i=1;i<=V;i++) {
+			if (answer[i] >= INFINITY)
+				System.out.println("INF");
+			else
+				System.out.println(answer[i]);
+
+		}
+
+	}
+
+	static void dijkstra() {
+		while (!queue.isEmpty()) {
+			Element e = queue.poll();
+
+			if (visit[e.idx])
+				continue;
+			else
+				visit[e.idx] = true;
+			// e.idx = 2 , {3,4}{4,5}
+			list[e.idx].stream().forEach(here -> {
+				answer[here.idx] = Math.min(answer[here.idx], here.distance + answer[e.idx]);
+				queue.add(new Element(here.idx, answer[here.idx]));
+			});
+		}
+	}
+
+	static class Element implements Comparable<Element> {
+		int idx;
+		int distance;
+
+		public Element(int idx, int distance) {
+			this.idx = idx;
+			this.distance = distance;
+		}
+
+		@Override
+		public int compareTo(Element o) {
+			return distance - o.distance;
+		}
+
+	}
+
+}

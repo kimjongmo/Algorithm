@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Exam11004 {
@@ -11,14 +12,18 @@ public class Exam11004 {
 		int N = Integer.parseInt(tokenizer.nextToken());
 		int K = Integer.parseInt(tokenizer.nextToken());
 		 
-		int[] arr = new int[N];
+		PriorityQueue<Integer> queue = new PriorityQueue<>();
 		tokenizer = new StringTokenizer(br.readLine()," ");
 		for(int i=0;i<N;i++) {
-			arr[i] = Integer.parseInt(tokenizer.nextToken());
+			queue.add(Integer.parseInt(tokenizer.nextToken()));
 		}
 		
-		Arrays.sort(arr);
+		while(--K > 0) {
+			queue.poll();
+		};
+		System.out.println(queue.poll());
 		
-		System.out.println(arr[K-1]);
+		
+		
 	}
 }
